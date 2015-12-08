@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from flask_restful import Api, Resource, reqparse
 
 from search import search_apmex
@@ -57,6 +57,16 @@ api.add_resource(Shinybars, '/api/shinybars')
 api.add_resource(Golden, '/api/goldeneagle')
 api.add_resource(Silvertowne, '/api/silvertowne')
 api.add_resource(Gainesville, '/api/gainesville')
+
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+
+@app.route('/api')
+def api_page():
+    return render_template('api.html')
 
 
 if __name__ == '__main__':
