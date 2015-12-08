@@ -107,7 +107,7 @@ def search_shinybars(query):
     req = requests.get(url)
     results = parse_search_items(req.content, query)
     for result in results:
-        result[1] = base.format(result[1])
+        result['url'] = base.format(result['url'])
     return results
 
 
@@ -131,7 +131,7 @@ def search_goldeneaglecoins(query):
     req = requests.get(url)
     results = parse_search_items(req.content, query)
     for result in results:
-        result[1] = base.format(result[1])
+        result['url'] = base.format(result['url'])
     return results
 
 
@@ -155,8 +155,8 @@ def search_silvertowne(query):
     req = requests.get(url)
     results = parse_search_items(req.content, query)
     for result in results:
-        result[1] = base.format(result[1])
-        result[2] = base.format(result[2])
+        result['url'] = base.format(result['url'])
+        result['img'] = base.format(result['img'])
     return results
 
 
@@ -180,6 +180,6 @@ def search_gainesvillecoins(query):
     req = requests.get(url)
     results = parse_search_items(req.content, query)
     for result in results:
-        result[1] = base.format(result[1])
+        result['url'] = base.format(result['url'])
     return results
 
