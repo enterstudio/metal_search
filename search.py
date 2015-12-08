@@ -15,7 +15,7 @@ def search_apmex(query):
             title_tag = product.select('div.product-item-title')[0]
             title = title_tag.text.strip()
             if fuzz.partial_ratio(title, query) >= FUZZ_MIN:
-                link = title_tag.a.attrs['href']
+                link = title_tag.a.attrs['href']  # relative
                 img_link = product.select('div.product-item-image')[0].img.attrs['src']
                 try:
                     table = product.select('table.table-volume-pricing')[0]
@@ -26,7 +26,7 @@ def search_apmex(query):
                     prices = [{headers[i]: cell.text for i, cell in enumerate(row.select("td"))} for row in table.select("tbody tr")]
                 else:
                     prices = []
-                possible.append([title, link, img_link, prices])
+                possible.append({'title':title, 'url':link, 'img':img_link, 'price':prices})
         return possible
 
     base = 'http://www.apmex.com{}'
@@ -35,7 +35,7 @@ def search_apmex(query):
     req = requests.get(url)
     results = parse_search_items(req.content, query)
     for res in results:
-        res[1] = base.format(res[1])  # add in base url
+        res['url'] = base.format(res['url'])
     return results
 
 
@@ -59,7 +59,7 @@ def search_provident(query):
                         prices = []
                 else:
                     prices = []
-                possible.append([title, link, img_link, prices])
+                possible.append({'title':title, 'url':link, 'img':img_link, 'price':prices})
         return possible
 
     base = 'http://www.providentmetals.com{}'
@@ -98,7 +98,7 @@ def search_shinybars(query):
                 link = item.a.attrs['href']
                 img_link = item.img.attrs['src']
                 price = item.select('div.prices')[0].text.replace('$', '')
-                possible.append([title, link, img_link, price])
+                possible.append({'title':title, 'url':link, 'img':img_link, 'price':price})
         return possible
 
     base = 'https://www.shinybars.com{}'
@@ -122,7 +122,7 @@ def search_goldeneaglecoins(query):
                 link = item.h2.a.attrs['href']
                 img_link = item.img.attrs['src']
                 price = item.fieldset.strong.text.strip().replace('$', '').replace(',', '')
-                possible.append([title, link, img_link, price])
+                possible.append({'title':title, 'url':link, 'img':img_link, 'price':price})
         return possible
 
     base = 'https://www.goldeneaglecoin.com{}'
@@ -146,7 +146,7 @@ def search_silvertowne(query):
                 link = item.a.attrs['href']  # relative
                 img_link = item.img.attrs['src']  # relative
                 price = item.select('p.featuredPrice')[0].text.strip()
-                possible.append([title, link, img_link, price])
+                possible.append({'title':title, 'url':link, 'img':img_link, 'price':price})
         return possible
 
     base = 'http://www.silvertowne.com{}'
@@ -171,7 +171,7 @@ def search_gainesvillecoins(query):
                 link = item.select('div.title')[0].a.attrs['href']  # relative
                 img_link = 'http:' + item.img.attrs['data-original']
                 price = item.select('div.price')[0].text
-                possible.append([title, link, img_link, price])
+                possible.append({'title':title, 'url':link, 'img':img_link, 'price':price})
         return possible
 
     base = 'http://www.gainesvillecoins.com{}'
