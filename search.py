@@ -14,7 +14,7 @@ def search_apmex(query):
         for product in products:
             title_tag = product.select('div.product-item-title')[0]
             title = title_tag.text.strip()
-            if fuzz.partial_ratio(title, query) >= FUZZ_MIN:
+            if fuzz.partial_ratio(title.lower(), query.lower()) >= FUZZ_MIN:
                 link = title_tag.a.attrs['href']  # relative
                 img_link = product.select('div.product-item-image')[0].img.attrs['src']
                 try:
@@ -22,11 +22,12 @@ def search_apmex(query):
                 except:
                     table = ''
                 if table:
-                    headers = [header.text for header in table.select('thead tr th')]
-                    prices = [{headers[i]: cell.text for i, cell in enumerate(row.select("td"))} for row in table.select("tbody tr")]
+                    price = table.tbody.find_all('td')[1].text  # gets the low tier cash price
+                    # headers = [header.text for header in table.select('thead tr th')]
+                    # prices = [{headers[i]: cell.text for i, cell in enumerate(row.select("td"))} for row in table.select("tbody tr")]
                 else:
-                    prices = []
-                possible.append({'title':title, 'url':link, 'img':img_link, 'price':prices})
+                    price = ''  # []
+                possible.append({'title':title, 'url':link, 'img':img_link, 'price':price})
         return possible
 
     base = 'http://www.apmex.com{}'
@@ -46,7 +47,7 @@ def search_provident(query):
         possible = []
         for item in items:
             title = item.h5.a.attrs['title'].strip()
-            if fuzz.partial_ratio(title, query) >= FUZZ_MIN:  
+            if fuzz.partial_ratio(title.lower(), query.lower()) >= FUZZ_MIN:  
                 link = item.h5.a.attrs['href']
                 img_link = item.select('div.image-wrapper')[0].img.attrs['src']
                 sku = item.find_parent('div', attrs={'class':'item-wrapper'}).attrs['rel']
@@ -54,12 +55,12 @@ def search_provident(query):
                     req = requests.get('http://www.providentmetals.com/services/products.php?type=product&sku='+sku)
                     data = req.json()
                     if data[0]['inStock']:
-                        prices = data[0]['tier_price']
+                        price = data[0]['price']
                     else:
-                        prices = []
+                        price = ''
                 else:
-                    prices = []
-                possible.append({'title':title, 'url':link, 'img':img_link, 'price':prices})
+                    price = ''
+                possible.append({'title':title, 'url':link, 'img':img_link, 'price':price})
         return possible
 
     base = 'http://www.providentmetals.com{}'
@@ -94,7 +95,7 @@ def search_shinybars(query):
         possible = []
         for item in items:
             title = item.h2.text.strip()
-            if fuzz.partial_ratio(title, query) >= FUZZ_MIN:
+            if fuzz.partial_ratio(title.lower(), query.lower()) >= FUZZ_MIN:
                 link = item.a.attrs['href']
                 img_link = item.img.attrs['src']
                 price = item.select('div.prices')[0].text.replace('$', '')
@@ -118,7 +119,7 @@ def search_goldeneaglecoins(query):
         items = soup.select('li.product-information')
         for item in items:
             title = item.h2.a.text.strip()
-            if fuzz.partial_ratio(title, query) >= FUZZ_MIN:
+            if fuzz.partial_ratio(title.lower(), query.lower()) >= FUZZ_MIN:
                 link = item.h2.a.attrs['href']
                 img_link = item.img.attrs['src']
                 price = item.fieldset.strong.text.strip().replace('$', '').replace(',', '')
@@ -142,7 +143,7 @@ def search_silvertowne(query):
         items = soup.select('div.productResult')
         for item in items:
             title = item.a.attrs['title'].strip()
-            if fuzz.partial_ratio(title, query) >= FUZZ_MIN:
+            if fuzz.partial_ratio(title.lower(), query.lower()) >= FUZZ_MIN:
                 link = item.a.attrs['href']  # relative
                 img_link = item.img.attrs['src']  # relative
                 price = item.select('p.featuredPrice')[0].text.strip()
@@ -167,7 +168,7 @@ def search_gainesvillecoins(query):
         items = soup.select('div.gridItem')
         for item in items:
             title = item.select('div.title')[0].a.attrs['title']
-            if fuzz.partial_ratio(title, query) >= FUZZ_MIN:
+            if fuzz.partial_ratio(title.lower(), query.lower()) >= FUZZ_MIN:
                 link = item.select('div.title')[0].a.attrs['href']  # relative
                 img_link = 'http:' + item.img.attrs['data-original']
                 price = item.select('div.price')[0].text

@@ -3,7 +3,8 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
     <script src="{{ url_for('static', filename='js/code.js') }}"></script>
     <title>PM Search</title>
-    <a href="{{ url_for('index') }}">Home</a> | <a href="{{ url_for('api_page') }}">API</a>
+    <a href="{{ url_for('index') }}">Home</a> | <a href="{{ url_for('api_page') }}">API</a> | 
+    <a href="http://spot.seanmckaybeck.com">Spot Prices</a> | <a href="http://premium.seanmckaybeck.com">Premium Calculator</a>
   </head>
   <body>
     {% block content %}{% endblock %}

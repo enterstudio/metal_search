@@ -2,3 +2,7 @@ body {
   background-color: #d3d3d3;
   text-align: center;
 }
+table.product-list {
+  margin-left: auto;
+  margin-right: auto;
+}
