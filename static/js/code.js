@@ -1,6 +1,6 @@
 String.prototype.capitalize = function() {
         return this.charAt(0).toUpperCase() + this.slice(1);
-}
+};
 
 
 function search() {
@@ -17,8 +17,9 @@ function search() {
         div.removeChild(div.childNodes[0]);
     var table = document.createElement('table');
     table.border = "1";
-    table.className = 'product-list';
-    var row = table.insertRow(0);
+    table.className = 'product-list sortable';
+    var header = table.createTHead();
+    var row = header.insertRow(0);
     row.insertCell(0).innerHTML = '<b>Dealer</b>';
     row.insertCell(1).innerHTML = '<b>Link</b>';
     row.insertCell(2).innerHTML = '<b>Image</b>';
@@ -33,19 +34,22 @@ function search() {
             request.send('query='+text);
 
             var data = JSON.parse(request.responseText);
+            var tbody = document.createElement('tbody');
             for (var j=0; j < data.length; ++j) {
                 if (data[j]['price'] === '')
                     continue;
-                var row = table.insertRow(-1);
-                row.insertCell(-1).innerHTML = boxes[i].name.capitalize();
-                row.insertCell(-1).innerHTML = '<a href="'+data[j]['url']+'">'+data[j]['title']+'</a>';
-                row.insertCell(-1).innerHTML = '<img src="'+data[j]['img']+'">';
-                row.insertCell(-1).innerHTML = data[j]['price'];
+                var rw = tbody.insertRow(-1);
+                rw.insertCell(-1).innerHTML = boxes[i].name.capitalize();
+                rw.insertCell(-1).innerHTML = '<a href="'+data[j]['url']+'">'+data[j]['title']+'</a>';
+                rw.insertCell(-1).innerHTML = '<img src="'+data[j]['img']+'">';
+                rw.insertCell(-1).innerHTML = data[j]['price'];
             }
+            table.appendChild(tbody);
         }
     }
 
-    var div = document.getElementsByClassName('products')[0];
+    sorttable.makeSortable(table);
+    div = document.getElementsByClassName('products')[0];
     div.appendChild(table);
 
     return false;
